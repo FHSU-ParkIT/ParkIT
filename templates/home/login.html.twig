@@ -1,11 +1,12 @@
-<?php
-	$pageTitle = 'Log In';
-	$headingText = "Log In";
-	include('includes/header.php') 
-?>
-		
+{% extends "base.html.twig" %}
 
-			<div class="d-flex flex-column align-items-center">
+{% block headerText %}
+    {{headerTitle}}
+{% endblock %}
+
+
+{% block content %}
+	<div class="d-flex flex-column align-items-center">
 				<!-- Content -->
 				<!-- User Sign in Form -->
 				<form class="w-50">
@@ -25,10 +26,9 @@
 
 				</form>
 
-				<a href="index.php" class="link-secondary pt-2">Return To Home</a>
+				<a href="{{ path('home') }}" class="link-secondary pt-2">Return To Home</a>
 				<!-- End of Content -->
 			</div>
 
-<?php 
-	include('includes/footer.php')
-?>
+
+{% endblock %}

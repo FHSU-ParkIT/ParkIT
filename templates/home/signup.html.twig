@@ -1,9 +1,11 @@
-<?php
-	$pageTitle = 'Sign Up';
-	$headingText = "Sign Up Today!";
-	include('includes/header.php') 
-?>
-		
+{% extends "base.html.twig" %}
+
+{% block headerText %}
+    {{headerTitle}}
+{% endblock %}
+
+
+{% block content %}
 			<div class="container d-flex flex-column align-items-center">
 				<!-- Content -->
 
@@ -38,6 +40,4 @@
 				<!-- End of Content -->
 			</div>
 
-<?php 
-	include('includes/footer.php')
-?>
+{% endblock %}
