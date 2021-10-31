@@ -1,0 +1,19 @@
+{% extends "base.html.twig" %}
+
+{% block headerText %}
+    {{headerTitle}}
+{% endblock %}
+
+
+{% block content %}
+    <div class="d-flex flex-column align-items-center">
+        <!-- Content -->
+        <div class="d-flex">
+            <a href="{{ path('login') }}" role="button" class="btn btn-outline-success btn-lg me-3" >Log In</a>
+            <a href="{{ path('signup') }}" role="button" class="btn btn-outline-primary btn-lg">Sign Up</a>
+        </div>
+
+        <!-- End of Content -->
+    </div>
+
+{% endblock %}
