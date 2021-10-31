@@ -29,13 +29,4 @@ class HomeController extends AbstractController
         ]);
     }
 
-        /**
-     * @Route("/signup", name="signup")
-     */
-    public function signup()
-    {
-        return $this->render('home/signup.html.twig',[
-            'headerTitle' => 'Sign Up'
-        ]);
-    }
 }
