@@ -9,7 +9,11 @@
 1. `composer install`
 	- There will need to be additional setup to get the database connected. The connection details will be added to .env
 
-2. `symfony server:start`
+2. `docker compose up`
+	- This will start the mysql db container. The database "main" should be created as well. 
+	- The credentials for the database if you need to troubleshoot are declared in the [Docker Compose yaml](./docker-compose.yaml) at the root of the project.
+3. `symfony server:start`
+
 
 
 # Symfony Quick Overview
