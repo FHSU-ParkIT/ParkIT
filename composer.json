@@ -20,11 +20,14 @@
         "symfony/framework-bundle": "5.3.*",
         "symfony/security-bundle": "5.3.*",
         "symfony/twig-bundle": "5.3.*",
+        "symfony/validator": "5.3.*",
         "symfony/yaml": "5.3.*"
     },
     "require-dev": {
         "doctrine/doctrine-fixtures-bundle": "^3.3",
-        "symfony/maker-bundle": "^1.14"
+        "symfony/maker-bundle": "^1.14",
+        "symfony/stopwatch": "5.3.*",
+        "symfony/web-profiler-bundle": "5.3.*"
     },
     "config": {
         "preferred-install": {
