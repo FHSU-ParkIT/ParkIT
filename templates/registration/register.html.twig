@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Register{% endblock %}
+
+{% block header %}
+    {{include('includes/header_with_logo.html.twig', {headerText: 'Register'})}}
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        {{ form_start(registrationForm) }}
+            {{ form_row(registrationForm.email) }}
+            {{ form_row(registrationForm.phone) }}
+            {{ form_row(registrationForm.plainPassword, {
+                label: 'Password'
+            }) }}
+            {{ form_row(registrationForm.agreeTerms) }}
+
+                    <div class="row justify-content-center ms-1 me-1">
+                        <button class="btn btn-success btn-lg" type="submit">Register!</button>
+                    </div>
+        {{ form_end(registrationForm) }}
+{% endblock %}

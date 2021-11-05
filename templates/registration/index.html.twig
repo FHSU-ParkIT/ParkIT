@@ -1,10 +1,10 @@
 {% extends 'base.html.twig' %}
 {# For rapid development: we're using the bootstrap template form theme #}
 {% form_theme form 'bootstrap_5_layout.html.twig' %}
-{% block headerText %}
-    {{headerTitle}}
-{% endblock %}
 
+{% block header %}
+    {{include('includes/header_with_logo.html.twig', {headerText: 'Login'})}}
+{% endblock %}
 
 {% block content %}
 			<div class="container d-flex flex-column align-items-center">
