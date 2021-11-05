@@ -15,27 +15,6 @@ class HomeController extends AbstractController
     {
         
         return $this->render('home/index.html.twig', [
-            'headerTitle' => 'Welcome!'
-        ]);
-    }
-
-    /**
-     * @Route("/login", name="login")
-     */
-    public function login()
-    {
-        return $this->render('home/login.html.twig',[
-            'headerTitle' => 'Login'
-        ]);
-    }
-
-        /**
-     * @Route("/signup", name="signup")
-     */
-    public function signup()
-    {
-        return $this->render('home/signup.html.twig',[
-            'headerTitle' => 'Sign Up'
         ]);
     }
 }
