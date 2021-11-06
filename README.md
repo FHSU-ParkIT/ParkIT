@@ -13,7 +13,7 @@
 	- This will start the mysql db container. The database "main" should be created as well. 
 	- The credentials for the database if you need to troubleshoot are declared in the [Docker Compose yaml](./docker-compose.yaml) at the root of the project.
 
-3. `smyfony console doctrine:migrations:migrate`
+3. `symfony console doctrine:migrations:migrate`
 	- Applies the existing migrations (in `./src/Migrations`) to the database.
 
 4. `symfony console doctrine:fixtures:load`
