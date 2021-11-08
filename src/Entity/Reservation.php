@@ -33,6 +33,12 @@ class Reservation
      */
     private $endDateTime;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=ParkingSpot::class, inversedBy="reservations")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $parkingSpot;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -70,6 +76,18 @@ class Reservation
     public function setEndDateTime(\DateTimeInterface $endDateTime): self
     {
         $this->endDateTime = $endDateTime;
+
+        return $this;
+    }
+
+    public function getParkingSpot(): ?ParkingSpot
+    {
+        return $this->parkingSpot;
+    }
+
+    public function setParkingSpot(?ParkingSpot $parkingSpot): self
+    {
+        $this->parkingSpot = $parkingSpot;
 
         return $this;
     }

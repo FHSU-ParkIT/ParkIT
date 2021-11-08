@@ -7,12 +7,17 @@
 
 {% block content %}
 
-    <div class="d-flex justify-content-center">
-        <div class="d-flex flex-column">
-            <a href ="#" role="button" class="btn btn-secondary action-button">Make Reservation</a>
-            <a href ="/logout" role="button" class="btn btn-danger btn-outline action-button">Log Out</a>
-        </div>
-    </div>
+    <div class="container">
+        {{  form_start(reservationForm) }}
+            {{ form_row(reservationForm.startDateTime) }}
+            {{ form_row(reservationForm.endDateTime) }}
+            {{ form_row(reservationForm.licensePlate) }}
 
+            <div class="row justify-content-center ms-1 me-1">
+                <button class="btn btn-success btn-lg" type="submit">Find Reservation</button>
+            </div>
+        {{ form_end(reservationForm) }}
+
+    </div>
 
 {% endblock %}
