@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -48,6 +50,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $plainPassword;
+
+    /**
+     * @ORM\OneToMany(targetEntity=LicensePlates::class, mappedBy="User", orphanRemoval=true)
+     */
+    private $licensePlates;
+
+    public function __construct()
+    {
+        $this->licensePlates = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -149,6 +161,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPlainPassword(?string $plainPassword): self
     {
         $this->plainPassword = $plainPassword;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|LicensePlates[]
+     */
+    public function getLicensePlates(): Collection
+    {
+        return $this->licensePlates;
+    }
+
+    public function addLicensePlate(LicensePlates $licensePlate): self
+    {
+        if (!$this->licensePlates->contains($licensePlate)) {
+            $this->licensePlates[] = $licensePlate;
+            $licensePlate->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLicensePlate(LicensePlates $licensePlate): self
+    {
+        if ($this->licensePlates->removeElement($licensePlate)) {
+            // set the owning side to null (unless already changed)
+            if ($licensePlate->getUser() === $this) {
+                $licensePlate->setUser(null);
+            }
+        }
 
         return $this;
     }
