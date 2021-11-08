@@ -52,7 +52,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $plainPassword;
 
     /**
-     * @ORM\OneToMany(targetEntity=LicensePlates::class, mappedBy="User", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=LicensePlate::class, mappedBy="User", orphanRemoval=true)
      */
     private $licensePlates;
 
@@ -166,14 +166,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @return Collection|LicensePlates[]
+     * @return Collection|LicensePlate[]
      */
     public function getLicensePlates(): Collection
     {
         return $this->licensePlates;
     }
 
-    public function addLicensePlate(LicensePlates $licensePlate): self
+    public function addLicensePlate(LicensePlate $licensePlate): self
     {
         if (!$this->licensePlates->contains($licensePlate)) {
             $this->licensePlates[] = $licensePlate;
@@ -183,7 +183,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function removeLicensePlate(LicensePlates $licensePlate): self
+    public function removeLicensePlate(LicensePlate $licensePlate): self
     {
         if ($this->licensePlates->removeElement($licensePlate)) {
             // set the owning side to null (unless already changed)
