@@ -67,33 +67,29 @@ class CustomerController extends AbstractController
         ;
         if($form->isSubmitted() && $form->isValid()){
             $userEmail = $this->security->getUser()->getUsername();
+            $userRepository = $this->getDoctrine()->getRepository(User::class);
+            $parkingSpotRepository = $this->getDoctrine()->getRepository(ParkingSpot::class);
+            $reservationRepository= $this->getDoctrine()->getRepository(Reservation::class);
 
-            $user = $this->getDoctrine()
-                ->getRepository(User::class)
-                ->findOneByEmail($userEmail)
-            ;
+            $user = $userRepository->findOneByEmail($userEmail);
 
             $licensePlate =  $reservation->getLicensePlate();
             $licensePlate->setUser($user); // Adds user to the added license plate.
             $reservation->setUser($user);
 
-            $sql = <<<'SQL'
-select id from parking_spot order by RAND() limit 1
-SQL;
+            $parkingSpotId = $parkingSpotRepository->findRandomParkingSpotAndReturnId();
 
-        $entityManager = $this->getDoctrine()->getManager();
-        $statement = $entityManager->getConnection()->prepare($sql);
-        $statement->execute();
-        $parkingSpotId = $statement->fetchAll()[0];
+        $possibleReservation = $reservationRepository->findByParkingSpotId($parkingSpotId);
 
-        $possibleReservation = $entityManager->getRepository(Reservation::class)->findByParkingSpotId($parkingSpotId['id']);
-
-
-        // If there is no possible reservation, proceed
+        // If there is no possible reservation, proceed (currently)
+            // TODO: We need to add a more safety to this by looping and checking for other spots if the first
+            //  one happens to be reserved. If all of the spots that exist have been exhausted, then repeat the process
+            //      checking times.
         if($possibleReservation === []){
-            $parkingSpot = $entityManager->getRepository(ParkingSpot::class)->findOneById($parkingSpotId['id']);
+            $parkingSpot = $this->getDoctrine()->getRepository(ParkingSpot::class)->findOneById($parkingSpotId);
             $reservation->setParkingSpot($parkingSpot);
 
+            $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($reservation->getLicensePlate());
             $entityManager->persist($reservation);
             $entityManager->flush();
@@ -102,6 +98,9 @@ SQL;
 
             // Add to message bag with a hip hip hooray
             return $this->redirectToRoute('customer_index');
+        }
+        else{
+            $this->addFlash('error', 'Could not create reservation at this time');
         }
 
         }
