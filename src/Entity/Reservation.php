@@ -39,6 +39,12 @@ class Reservation
      */
     private $parkingSpot;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="reservations")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $user;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -88,6 +94,18 @@ class Reservation
     public function setParkingSpot(?ParkingSpot $parkingSpot): self
     {
         $this->parkingSpot = $parkingSpot;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
 
         return $this;
     }

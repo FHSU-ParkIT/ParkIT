@@ -4,7 +4,9 @@ namespace App\Repository;
 
 use App\Entity\ParkingSpot;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
+use Error;
 
 /**
  * @method ParkingSpot|null find($id, $lockMode = null, $lockVersion = null)
@@ -18,6 +20,9 @@ class ParkingSpotRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, ParkingSpot::class);
     }
+
+    // Select a random ID within the Parking spot and check to see if there is a reservation between the proposed times:
+
 
     // /**
     //  * @return ParkingSpot[] Returns an array of ParkingSpot objects
@@ -47,4 +52,23 @@ class ParkingSpotRepository extends ServiceEntityRepository
         ;
     }
     */
+
+
+    /**
+     * @param $id
+     * @return ParkingSpot|null
+     * @throws Error
+     */
+    public function findOneById($id): ?ParkingSpot
+    {
+        try {
+            return $this->createQueryBuilder('p')
+                ->andWhere('p.id = :val')
+                ->setParameter('val', $id)
+                ->getQuery()
+                ->getOneOrNullResult();
+        } catch (NonUniqueResultException $e) {
+            throw new Error('More than one result found. :^(');
+        }
+    }
 }
