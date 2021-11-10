@@ -4,9 +4,7 @@ namespace App\Repository;
 
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
-use Error;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -54,26 +52,6 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         ;
     }
     */
-
-    /**
-     * @param $email
-     * @return User|null
-     * @throws Error
-     */
-    public function findOneByEmail($email): ?User
-    {
-        try {
-            return $this->createQueryBuilder('user')
-                ->andWhere('user.email = :val')
-                ->setParameter('val', $email)
-                ->getQuery()
-                ->getOneOrNullResult();
-        } catch (NonUniqueResultException $e) {
-            throw new Error('More than one result found. :^(');
-        }
-
-    }
-
 
     /*
     public function findOneBySomeField($value): ?User
