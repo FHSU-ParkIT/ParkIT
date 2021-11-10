@@ -16,9 +16,15 @@ use Error;
  */
 class ParkingSpotRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    /**
+     * @var Connection
+     */
+    private $connection;
+
+    public function __construct(ManagerRegistry $registry, Connection $connection)
     {
         parent::__construct($registry, ParkingSpot::class);
+        $this->connection = $connection;
     }
 
     // Select a random ID within the Parking spot and check to see if there is a reservation between the proposed times:
@@ -70,5 +76,10 @@ class ParkingSpotRepository extends ServiceEntityRepository
         } catch (NonUniqueResultException $e) {
             throw new Error('More than one result found. :^(');
         }
+    }
+
+    public function findRandomParkingSpotAndReturnId()
+    {
+        return $this->connection->fetchOne('select id from parking_spot order by RAND()');
     }
 }
