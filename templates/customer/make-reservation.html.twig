@@ -8,6 +8,12 @@
 {% block content %}
 
     <div class="container">
+
+        {% for message in app.flashes('error') %}
+            <div class="alert alert-danger" role="alert">
+                {{ message }}
+            </div>
+        {% endfor %}
         {{  form_start(reservationForm) }}
             {{ form_row(reservationForm.startDateTime) }}
             {{ form_row(reservationForm.endDateTime) }}
