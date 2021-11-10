@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\ParkingSpot;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\DBAL\Connection;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 use Error;
