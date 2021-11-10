@@ -15,16 +15,15 @@
                 <h1>Your Reservations</h1>
             </div>
             <table class="table table-hover">
-
-            {% for reservation in reservations %}
                 <thead>
-                    <tr>
-                        <th>Plate Number</th>
-                        <th>From</th>
-                        <th>To</th>
-                        <th>Where</th>
-                    </tr>
+                <tr>
+                    <th>Plate Number</th>
+                    <th>From</th>
+                    <th>To</th>
+                    <th>Where</th>
+                </tr>
                 </thead>
+                {% for reservation in reservations %}
                 <tbody>
                     <tr>
                         <td>{{ reservation.licensePlate.plateNumber }}</td>
