@@ -6,7 +6,9 @@ use App\Entity\ParkingSpot;
 use App\Entity\Reservation;
 use App\Entity\User;
 use App\Form\ReservationType;
+use App\Form\UserType;
 use App\Repository\UserRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -109,4 +111,32 @@ class CustomerController extends AbstractController
             'reservationForm' => $form->createView(),
         ]);
     }
+
+    /**
+     *
+     * @Route("/profile", name="profile_management")
+     * @param Request $request
+     * @return Response
+     */
+    public function profile(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $form = $this->createForm(UserType::class, $this->getUser());
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $user = $form->getData();
+
+            $entityManager->persist($user);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Profile Updated!');
+            return $this->redirectToRoute('customer_profile_management');
+        }
+
+        return $this->render('customer/profile-management.html.twig', [
+            'userForm' => $form->createView(),
+        ]);
+    }
+
+
 }
