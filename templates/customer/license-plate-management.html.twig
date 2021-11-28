@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+{% block title %}Customer Portal{% endblock %}
+
+{% block header %}
+        {% include 'includes/header_with_logo.html.twig' %}
+{% endblock %}
+
+{% block content %}
+
+    <div class="d-flex justify-content-center">
+        <div class="d-flex flex-column">
+
+            {% for message in app.flashes('success') %}
+                <div class="alert alert-success" role="alert">
+                    {{ message }}
+                </div>
+            {% endfor %}
+
+
+
+            {% if licensePlates %}
+                <div class="text-center">
+
+                    <h1>Registered License Plates</h1>
+                </div>
+                <table class="table table-hover text-center">
+
+                    <thead>
+                    <tr>
+                        <th colspan="2">Plate Number</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for licensePlate in licensePlates %}
+                        <tr>
+                            <td>{{ licensePlate.plateNumber }}</td>
+                            <td><a href="{{ path('customer_license_plate_management', { 'removeLicensePlate': licensePlate.id}) }}">Remove</a></td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+
+                </table>
+            {% endif %}
+
+            <a href="{{ path('customer_add_license_plate') }}" class="btn btn-success mb-2">Add License Plate</a>
+            <a href="{{ path('customer_index') }}" class="link-secondary pt-2 text-center">Return To Customer Home</a>
+        </div>
+    </div>
+
+
+{% endblock %}

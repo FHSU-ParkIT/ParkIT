@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+{% block title %}Customer Portal{% endblock %}
+
+{% block header %}
+        {% include 'includes/header_with_logo.html.twig' %}
+{% endblock %}
+
+{% block content %}
+
+    <div class="d-flex justify-content-center">
+        <div class="d-flex flex-column">
+            <h1>Add License Plate</h1>
+            {{ form_start(licensePlateForm) }}
+                {{ form_errors(licensePlateForm) }}
+                {{ form_row(licensePlateForm.plateNumber) }}
+                <div class="row justify-content-center ms-1 me-1">
+                    <button type="submit" class="btn btn-success mb-2">Add</button>
+                    <a href="{{ path('customer_license_plate_management') }}" class="link-secondary pt-2 text-center">Return To Previous Page</a>
+                </div>
+            {{ form_end(licensePlateForm) }}
+        </div>
+    </div>
+
+
+{% endblock %}

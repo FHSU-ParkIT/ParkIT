@@ -2,9 +2,11 @@
 
 namespace App\Controller;
 
+use App\Entity\LicensePlate;
 use App\Entity\ParkingSpot;
 use App\Entity\Reservation;
 use App\Entity\User;
+use App\Form\LicensePlateType;
 use App\Form\ReservationType;
 use App\Form\UserType;
 use App\Repository\UserRepository;
@@ -138,5 +140,87 @@ class CustomerController extends AbstractController
         ]);
     }
 
+    /**
+     * @Route("/plate-management", name="license_plate_management")
+     * @return Response
+     */
+    public function manageLicensePlates(Request $request): Response
+    {
+
+        $licensePlateRepository = $this->getDoctrine()->getRepository(LicensePlate::class);
+
+        if($request->query->get('removeLicensePlate'))
+        {
+            $plateId = $request->query->get('removeLicensePlate');
+            // Find licenseplate within database
+            $licensePlate = $licensePlateRepository->findBy(['id'=>$plateId]);
+
+            if(count($licensePlate) === 1) {
+                $entityManager = $this->getDoctrine()->getManager();
+                try{
+
+                    $entityManager->remove($licensePlate[0]);
+                    $entityManager->flush();
+                    $this->addFlash('success', 'License plate successfully removed.');
+                }
+                catch(\Exception $exception){
+                    // Add additional error handling if the need arises
+                    $this->addFlash('danger', 'Something went wrong...');
+                }
+                return $this->redirectToRoute('customer_license_plate_management');
+            };
+        }
+        $userLicensePlates = $licensePlateRepository->findByUserField($this->security->getUser());
+
+        return $this->render('customer/license-plate-management.html.twig',[
+            'licensePlates' => $userLicensePlates,
+        ]);
+    }
+
+    /**
+     * @Route("/add-license-plate", name="add_license_plate")
+     * @param Request $request
+     * @param EntityManagerInterface $entityManager
+     * @return Response
+     */
+    public function addLicensePlate(Request $request, EntityManagerInterface $entityManager):Response
+    {
+        $form = $this->createForm(LicensePlateType::class);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            /** @var LicensePlate $plate */
+            $plate = $form->getData();
+            $userEmail = $this->security->getUser()->getUsername();
+            $userRepository = $this->getDoctrine()->getRepository(User::class);
+            $user = $userRepository->findOneByEmail($userEmail);
+            $plate->setUser($user);
+            try{
+                $entityManager->persist($plate);
+                $entityManager->flush();
+                $this->addFlash('success', 'License plate successfully added.');
+            }
+            catch(\Exception $exception){
+                // Add additional error handling if the need arises
+                $this->addFlash('danger', 'Something went wrong...');
+
+                return $this->render('customer/add-license-plate.html.twig',[
+                    'licensePlateForm'=>$form->createView(),
+                ]);
+
+            }
+            if($request->query->get('redirectTo')){
+                return $this->redirectToRoute($request->query->get('redirectTo'));
+            }
+            return $this->redirectToRoute('customer_license_plate_management');
+
+        }
+
+        return $this->render('customer/add-license-plate.html.twig',[
+            'licensePlateForm'=>$form->createView(),
+        ]);
+    }
 
 }
