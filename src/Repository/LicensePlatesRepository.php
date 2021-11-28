@@ -19,6 +19,16 @@ class LicensePlatesRepository extends ServiceEntityRepository
         parent::__construct($registry, LicensePlate::class);
     }
 
+    public function findByUserField($user){
+        return $this->createQueryBuilder('l')
+            ->andWhere('l.User = :val')
+            ->setParameter('val', $user)
+            ->orderBy('l.id', 'ASC')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult()
+            ;
+    }
     // /**
     //  * @return LicensePlates[] Returns an array of LicensePlates objects
     //  */
