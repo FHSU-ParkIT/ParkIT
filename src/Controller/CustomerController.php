@@ -63,6 +63,19 @@ class CustomerController extends AbstractController
      */
     public function makeReservation(Request $request): Response
     {
+
+        $userEmail = $this->security->getUser()->getUsername();
+        $userRepository = $this->getDoctrine()->getRepository(User::class);
+
+
+        /** @var User $user */
+        $user = $userRepository->findOneByEmail($userEmail);
+
+//        If user does not have a license plate, redirect them to create License Plate
+       if(count($user->getLicensePlates()) === 0){
+           return $this->redirectToRoute('customer_add_license_plate', ['redirectTo'=>'customer_make_reservation']);
+       }
+
         $reservation = new Reservation();
 
         $form = $this->createForm(ReservationType::class, $reservation);
@@ -70,12 +83,9 @@ class CustomerController extends AbstractController
         $form->handleRequest($request);
         ;
         if($form->isSubmitted() && $form->isValid()){
-            $userEmail = $this->security->getUser()->getUsername();
-            $userRepository = $this->getDoctrine()->getRepository(User::class);
             $parkingSpotRepository = $this->getDoctrine()->getRepository(ParkingSpot::class);
             $reservationRepository= $this->getDoctrine()->getRepository(Reservation::class);
 
-            $user = $userRepository->findOneByEmail($userEmail);
 
             $licensePlate =  $reservation->getLicensePlate();
             $licensePlate->setUser($user); // Adds user to the added license plate.
