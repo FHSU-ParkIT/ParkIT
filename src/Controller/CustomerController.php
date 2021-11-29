@@ -63,33 +63,31 @@ class CustomerController extends AbstractController
      */
     public function makeReservation(Request $request): Response
     {
-
         $userEmail = $this->security->getUser()->getUsername();
         $userRepository = $this->getDoctrine()->getRepository(User::class);
-
 
         /** @var User $user */
         $user = $userRepository->findOneByEmail($userEmail);
 
-//        If user does not have a license plate, redirect them to create License Plate
-       if(count($user->getLicensePlates()) === 0){
+        // If user does not have a license plate, redirect them to create License Plate
+        if(count($user->getLicensePlates()) === 0){
            return $this->redirectToRoute('customer_add_license_plate', ['redirectTo'=>'customer_make_reservation']);
-       }
+        }
 
         $reservation = new Reservation();
-
         $form = $this->createForm(ReservationType::class, $reservation);
-
         $form->handleRequest($request);
-        ;
+
+        // Actions that take place if the form is a valid submission
         if($form->isSubmitted() && $form->isValid()){
+            // Instantiate repositories for queries
             $parkingSpotRepository = $this->getDoctrine()->getRepository(ParkingSpot::class);
             $reservationRepository= $this->getDoctrine()->getRepository(Reservation::class);
 
 
             $licensePlate =  $reservation->getLicensePlate();
             $licensePlate->setUser($user); // Adds user to the added license plate.
-            $reservation->setUser($user);
+            $reservation->setUser($user); // Adds user to the reservation
 
             $parkingSpotId = $parkingSpotRepository->findRandomParkingSpotAndReturnId();
 
@@ -128,13 +126,16 @@ class CustomerController extends AbstractController
      *
      * @Route("/profile", name="profile_management")
      * @param Request $request
+     * @param EntityManagerInterface $entityManager
      * @return Response
      */
     public function profile(Request $request, EntityManagerInterface $entityManager): Response
     {
+        // Create the user form
         $form = $this->createForm(UserType::class, $this->getUser());
         $form->handleRequest($request);
 
+        // Actions that take place if the submitted form is valid
         if ($form->isSubmitted() && $form->isValid()) {
             $user = $form->getData();
 
@@ -142,7 +143,7 @@ class CustomerController extends AbstractController
             $entityManager->flush();
 
             $this->addFlash('success', 'Profile Updated!');
-            return $this->redirectToRoute('customer_profile_management');
+            return $this->redirectToRoute('customer_profile_management'); // Redirect so that a refresh will not resubmit data
         }
 
         return $this->render('customer/profile-management.html.twig', [
@@ -152,17 +153,20 @@ class CustomerController extends AbstractController
 
     /**
      * @Route("/plate-management", name="license_plate_management")
+     * @param Request $request
      * @return Response
      */
     public function manageLicensePlates(Request $request): Response
     {
-
+        // Instantiate license plate repository for queries
         $licensePlateRepository = $this->getDoctrine()->getRepository(LicensePlate::class);
 
+        // removeLicensePlate query param containing the ID is present in the request
+        // if the user clicks the "Remove" button next to a license plate
         if($request->query->get('removeLicensePlate'))
         {
             $plateId = $request->query->get('removeLicensePlate');
-            // Find licenseplate within database
+            // Find licenseplate in database
             $licensePlate = $licensePlateRepository->findBy(['id'=>$plateId]);
 
             if(count($licensePlate) === 1) {
@@ -180,6 +184,8 @@ class CustomerController extends AbstractController
                 return $this->redirectToRoute('customer_license_plate_management');
             };
         }
+
+        // Get all of the licenseplates for this user
         $userLicensePlates = $licensePlateRepository->findByUserField($this->security->getUser());
 
         return $this->render('customer/license-plate-management.html.twig',[
@@ -196,13 +202,14 @@ class CustomerController extends AbstractController
     public function addLicensePlate(Request $request, EntityManagerInterface $entityManager):Response
     {
         $form = $this->createForm(LicensePlateType::class);
-
         $form->handleRequest($request);
 
+        // Actions that take place if this form is submitted and valid
         if ($form->isSubmitted() && $form->isValid()) {
 
             /** @var LicensePlate $plate */
-            $plate = $form->getData();
+            $plate = $form->getData(); // Instantiate a LicensePlate object from the data submitted
+
             $userEmail = $this->security->getUser()->getUsername();
             $userRepository = $this->getDoctrine()->getRepository(User::class);
             $user = $userRepository->findOneByEmail($userEmail);
@@ -221,9 +228,12 @@ class CustomerController extends AbstractController
                 ]);
 
             }
+
+            // If a redirectTo query param is present in the request, redirect there
             if($request->query->get('redirectTo')){
                 return $this->redirectToRoute($request->query->get('redirectTo'));
             }
+            // Otherwise redirect back to the customer license plate management route
             return $this->redirectToRoute('customer_license_plate_management');
 
         }
