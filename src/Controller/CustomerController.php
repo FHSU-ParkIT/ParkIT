@@ -37,7 +37,7 @@ class CustomerController extends AbstractController
     /**
      * @Route("/", name="index")
      */
-    public function index(): Response
+    public function index(Request $request): Response
     {
 
         $userEmail = $this->security->getUser()->getUsername();
@@ -46,11 +46,32 @@ class CustomerController extends AbstractController
             ->getRepository(User::class)
             ->findOneByEmail($userEmail)
         ;
-        $reservations = $this->getDoctrine()
-            ->getRepository(Reservation::class)
-            ->findByUserId($user->getId())
+
+        /** @var ReservationRepository */
+        $reservationRepository = $this->getDoctrine()->getRepository(Reservation::class);
+        $reservations = $reservationRepository->findByUserId($user->getId())
         ;
         dump($reservations);
+
+        if($request->request->get('removeReservation'))
+        {
+            (int)$reservationId = $request->request->get('removeReservation');
+            $reservationToBeRemoved =  $reservationRepository->findByUserIdAndReservationId($user, $reservationId);
+            // If the user requesting to remove is also the owner of the reservation:
+            if(count($reservationToBeRemoved) === 1){
+                $entityManager = $this->getDoctrine()->getManager();
+                try{
+                    $entityManager->remove($reservationToBeRemoved[0]);
+                    $entityManager->flush();
+                    $this->addFlash('success', 'Reservation successfully removed');
+                }
+                catch(\Exception $exception){
+                    $this->addFlash('danger', 'Something went wrong...');
+                }
+                
+                return $this->redirectToRoute('customer_index');
+            }
+        }
 
         return $this->render('customer/index.html.twig', [
             'reservations' => $reservations
