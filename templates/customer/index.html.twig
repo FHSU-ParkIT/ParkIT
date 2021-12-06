@@ -21,19 +21,24 @@
                     <th>From</th>
                     <th>To</th>
                     <th>Where</th>
+                    <th></th>
                 </tr>
                 </thead>
-                {% for reservation in reservations %}
                 <tbody>
+                {% for reservation in reservations %}
                     <tr>
                         <td>{{ reservation.licensePlate.plateNumber }}</td>
                         <td>{{ reservation.startDateTime|date }}</td>
                         <td>{{ reservation.endDateTime|date }}</td>
                         <td>{{ reservation.parkingSpot.lotName }} - {{ reservation.parkingSpot.spotNumber }}</td>
+                        <td>
+                            <form action="" method="post">
+                                <button class="btn btn-sm btn-danger" name="removeReservation" value="{{reservation.id}}">Remove</button>
+                            </form>
+                        </td>
                     </tr>
-                </tbody>
-                <p></p>
             {% endfor %}
+                </tbody>
 
             </table>
         {% endif %}
